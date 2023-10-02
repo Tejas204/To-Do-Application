@@ -1,3 +1,5 @@
+/*********** Node basic starts ***********************
+ 
 import http from "http"
 // import gfName, { gfName2, gfName3 } from "./feature.js";
 import {generateNumber} from "./feature.js"
@@ -28,4 +30,14 @@ const server = http.createServer((req, res) => {
 
 server.listen(5000, () => {
     console.log("Server is working")
+})
+*************** Node basic ends ********************/
+
+import express from "express";
+
+// Industry practice is to name the server as app
+const app = express();
+
+app.listen(5000, () => {
+    console.log("Server is working");
 })
