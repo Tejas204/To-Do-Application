@@ -34,9 +34,22 @@ server.listen(5000, () => {
 *************** Node basic ends ********************/
 
 import express from "express";
+import path from "path";
 
 // Industry practice is to name the server as app
+// express() creates a server
 const app = express();
+
+// Get method is the basic method
+app.get("/", (req, res) => {
+    // Path.resolve() give us the current absolute path of the directory
+    console.log(path.resolve());
+    const currentLocation = path.resolve();
+    
+    // We join the relative path of index.html to the directory
+    // and send the html file to the root '/'
+    res.sendFile(path.join(currentLocation, "./index.html"));
+})
 
 app.listen(5000, () => {
     console.log("Server is working");
