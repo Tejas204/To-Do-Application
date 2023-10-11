@@ -40,6 +40,15 @@ import path from "path";
 // express() creates a server
 const app = express();
 
+// using only express.static will make the folder 'public' available to the server
+// because it is middle ware, hence we need to use app.use so that public is
+// statically available(publically available through URL)
+app.use(express.static(path.join(path.resolve(), "public")));
+
+// Setting up view engine for ejs
+// ejs engine is used to pass dynamic values
+app.set("view engine", "ejs");
+
 // Get method is the basic method
 app.get("/", (req, res) => {
     // Path.resolve() give us the current absolute path of the directory
@@ -48,7 +57,9 @@ app.get("/", (req, res) => {
     
     // We join the relative path of index.html to the directory
     // and send the html file to the root '/'
-    res.sendFile(path.join(currentLocation, "./index.html"));
+    // res.sendFile(path.join(currentLocation, "./index.html"));
+
+    res.render("index", {name: "Tejas"});
 })
 
 app.listen(5000, () => {
