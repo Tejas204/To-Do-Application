@@ -4,13 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <main>
+        <!-- By default, method of <form> is get. Hence, we can see data in URL -->
+        <!-- action: shows which endpoint/API to hit on submit -->
+        <form method="post" action="">
+            <h1>Contact Now</h1>
+            <input type="text" name="name"  id="name" placeholder="Name">
+            <input type="email" name="email" id="email" placeholder="Email">
+            <button type="submit">Send Message</button>
+        </form>
+    </main>
 
-    <h1>This is a file</h1>
-    <h2> This is very simple</h2>
-    <h3>Hello <%=name %></h3>
-    <h3>Hello <%= locals.name %>, this is the best practice to render data as it does not give error if name is not defined</h3>
+   
     
 </body>
 </html>

@@ -40,16 +40,20 @@ import path from "path";
 // express() creates a server
 const app = express();
 
+const users = [];
+
 // using only express.static will make the folder 'public' available to the server
 // because it is middle ware, hence we need to use app.use so that public is
 // statically available(publically available through URL)
 app.use(express.static(path.join(path.resolve(), "public")));
+// Used to access form data
+app.use(express.urlencoded({extended: true}));                      
 
 // Setting up view engine for ejs
 // ejs engine is used to pass dynamic values
 app.set("view engine", "ejs");
 
-// Get method is the basic method
+// API: Get method is the basic method
 app.get("/", (req, res) => {
     // Path.resolve() give us the current absolute path of the directory
     console.log(path.resolve());
@@ -60,6 +64,18 @@ app.get("/", (req, res) => {
     // res.sendFile(path.join(currentLocation, "./index.html"));
 
     res.render("index", {name: "Tejas"});
+})
+
+// API: Render success page
+app.get("/success", (req, res)=>{
+    res.render("success");
+})
+
+// API: Post method
+app.post("/", (req,res)=>{
+    users.push({username: req.body.name, email: req.body.email});
+    // res.render("success");
+    res.redirect("/success")
 })
 
 app.listen(5000, () => {
