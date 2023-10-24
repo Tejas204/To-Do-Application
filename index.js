@@ -71,6 +71,13 @@ app.get("/success", (req, res)=>{
     res.render("success");
 })
 
+// API: get all users
+app.get("/users", (req, res)=>{
+    res.json({
+        users,
+    })
+})
+
 // API: Post method
 app.post("/", (req,res)=>{
     users.push({username: req.body.name, email: req.body.email});
