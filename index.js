@@ -35,10 +35,25 @@ server.listen(5000, () => {
 
 import express from "express";
 import path from "path";
+import mongoose from "mongoose";
 
 // Industry practice is to name the server as app
 // express() creates a server
 const app = express();
+
+// Connection: node to mongoDB
+mongoose.connect("mongodb://localhost:27017", {
+    dbName: "backend",
+}).then(c=>console.log("Database Connected")).catch((e)=>console.log(e));
+
+// Schema: defines what the document will contain
+const messageSchema = new mongoose.Schema({
+    name: String,
+    email: String,
+});
+
+// Define model/collection
+const Messge = mongoose.model("Message", messageSchema);
 
 const users = [];
 
@@ -79,13 +94,16 @@ app.get("/users", (req, res)=>{
 })
 
 // API: add API
-app.get("/add", (req, res)=>{
+app.get("/add", async (req, res)=>{
+    await Messge.create({name:"Tejas 2", email:"sample2@gmail.com"});
     res.send("Nice");
 })
 
 // API: Post method
-app.post("/", (req,res)=>{
-    users.push({username: req.body.name, email: req.body.email});
+app.post("/contact", async (req,res)=>{
+    var messageData = {name: req.body.name, email: req.body.email};
+    console.log(messageData);
+    await Messge.create(messageData);
     // res.render("success");
     res.redirect("/success")
 })
