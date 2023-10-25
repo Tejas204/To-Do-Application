@@ -78,6 +78,11 @@ app.get("/users", (req, res)=>{
     })
 })
 
+// API: add API
+app.get("/add", (req, res)=>{
+    res.send("Nice");
+})
+
 // API: Post method
 app.post("/", (req,res)=>{
     users.push({username: req.body.name, email: req.body.email});
