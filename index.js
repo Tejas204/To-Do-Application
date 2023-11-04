@@ -78,7 +78,7 @@ app.get("/", (req, res) => {
     // and send the html file to the root '/'
     // res.sendFile(path.join(currentLocation, "./index.html"));
 
-    res.render("index", {name: "Tejas"});
+    res.render("login");
 })
 
 // API: Render success page
@@ -106,6 +106,12 @@ app.post("/contact", async (req,res)=>{
     await Messge.create(messageData);
     // res.render("success");
     res.redirect("/success")
+})
+
+// API: Login API
+app.post("/login", (req, res)=>{
+    res.cookie("token", "I am in");
+    res.redirect("/")
 })
 
 app.listen(5000, () => {
