@@ -110,7 +110,13 @@ app.post("/contact", async (req,res)=>{
 
 // API: Login API
 app.post("/login", (req, res)=>{
-    res.cookie("token", "I am in");
+    // Cookie: It stores data of the loggin in user
+    // Ex: Key-Value pairs, domain, path, expiry of cookies.
+    // When cookie expires, user is automatically logged out. Default expiry is 'session'
+    res.cookie("token", "I am in", {
+        httpOnly: true,
+        expires: new Date(Date.now() + 60*1000),
+    });
     res.redirect("/")
 })
 
