@@ -48,13 +48,13 @@ mongoose.connect("mongodb://localhost:27017", {
 }).then(c=>console.log("Database Connected")).catch((e)=>console.log(e));
 
 // Schema: defines what the document will contain
-const messageSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: String,
     email: String,
 });
 
 // Define model/collection
-const Messge = mongoose.model("Message", messageSchema);
+const User = mongoose.model("User", userSchema);
 
 const users = [];
 
@@ -99,10 +99,6 @@ app.get("/", isAuthenticated,(req, res) => {
 
 })
 
-// API: Render success page
-app.get("/success", (req, res)=>{
-    res.render("success");
-})
 
 // API: get all users
 app.get("/users", (req, res)=>{
@@ -117,28 +113,31 @@ app.get("/add", async (req, res)=>{
     res.send("Nice");
 })
 
-// API: Post method
-app.post("/contact", async (req,res)=>{
-    var messageData = {name: req.body.name, email: req.body.email};
-    console.log(messageData);
-    await Messge.create(messageData);
-    // res.render("success");
-    res.redirect("/success")
-})
+
 
 // API: Login API
-app.post("/login", (req, res)=>{
+app.post("/login", async (req, res)=>{
     // Cookie: It stores data of the loggin in user
     // Ex: Key-Value pairs, domain, path, expiry of cookies.
     // When cookie expires, user is automatically logged out. Default expiry is 'session'
-    res.cookie("token", "I am in", {
+
+    const {name, email} = req.body;
+
+    const user = await User.create({
+        name: name,
+        email: email,
+    });
+
+
+    res.cookie("token", user._id, {
         httpOnly: true,
         expires: new Date(Date.now() + 60*1000),
     });
+    
     res.redirect("/")
 })
 
-// API: Logout
+// API: Logout API
 // "Get" is used for logout as we don't need to pass any data
 app.get("/logout", (req, res)=>{
     res.cookie("token", null, {
@@ -147,6 +146,8 @@ app.get("/logout", (req, res)=>{
     });
     res.redirect("/")
 })
+
+// API: Con
 
 app.listen(5000, () => {
     console.log("Server is working");
