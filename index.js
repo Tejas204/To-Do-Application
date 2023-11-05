@@ -36,6 +36,7 @@ server.listen(5000, () => {
 import express from "express";
 import path from "path";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser"
 
 // Industry practice is to name the server as app
 // express() creates a server
@@ -61,15 +62,31 @@ const users = [];
 // because it is middle ware, hence we need to use app.use so that public is
 // statically available(publically available through URL)
 app.use(express.static(path.join(path.resolve(), "public")));
+
 // Used to access form data
-app.use(express.urlencoded({extended: true}));                      
+app.use(express.urlencoded({extended: true}));   
+
+// Cookie Parser: used to access all cookies
+app.use(cookieParser());    
 
 // Setting up view engine for ejs
 // ejs engine is used to pass dynamic values
 app.set("view engine", "ejs");
 
+// Function: Authentication
+const isAuthenticated = (req, res, next) => {
+    const {token} = req.cookies;
+
+    if(token){
+        next();
+    }
+    else{
+        res.render("login");
+    }
+}
+
 // API: Get method is the basic method
-app.get("/", (req, res) => {
+app.get("/", isAuthenticated,(req, res) => {
     // Path.resolve() give us the current absolute path of the directory
     console.log(path.resolve());
     const currentLocation = path.resolve();
@@ -77,8 +94,9 @@ app.get("/", (req, res) => {
     // We join the relative path of index.html to the directory
     // and send the html file to the root '/'
     // res.sendFile(path.join(currentLocation, "./index.html"));
+    
+    res.render("logout");
 
-    res.render("login");
 })
 
 // API: Render success page
@@ -116,6 +134,16 @@ app.post("/login", (req, res)=>{
     res.cookie("token", "I am in", {
         httpOnly: true,
         expires: new Date(Date.now() + 60*1000),
+    });
+    res.redirect("/")
+})
+
+// API: Logout
+// "Get" is used for logout as we don't need to pass any data
+app.get("/logout", (req, res)=>{
+    res.cookie("token", null, {
+        httpOnly: true,
+        expires: new Date(Date.now()),
     });
     res.redirect("/")
 })
