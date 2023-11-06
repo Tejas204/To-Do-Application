@@ -107,7 +107,7 @@ app.get("/", isAuthenticated,(req, res) => {
 
 })
 
-// API: Logout API
+// Route: for logout page
 // "Get" is used for logout as we don't need to pass any data
 app.get("/logout", (req, res)=>{
     res.cookie("token", null, {
@@ -122,6 +122,7 @@ app.get("/register", (req, res)=>{
     res.render("register");
 });
 
+// Route: for login page
 app.get("/login", (req, res) => {
     res.render("login");
 })
@@ -154,23 +155,27 @@ app.post("/register", async (req, res)=>{
     // Find if the user exists by email
     let user = await User.findOne({email});
 
+    // If user exists, don't register, redirect to login
     if(user){
         return res.redirect("/login");
     }
+    // Register new user
     user = await User.create({
         name: name,
         email: email,
         password: password
     });
 
+    // Create encrypted token with client secret
     const token = jwt.sign({_id: user._id}, "asasasasas");
 
+    // Create a cookie to store user data
     res.cookie("token", token, {
         httpOnly: true,
         expires: new Date(Date.now() + 60*1000),
     });
     
-    res.redirect("/")
+    res.redirect("/");
 })
 
 app.listen(5000, () => {
