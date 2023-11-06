@@ -37,6 +37,7 @@ import express from "express";
 import path from "path";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser"
+import jwt from "jsonwebtoken";
 
 // Industry practice is to name the server as app
 // express() creates a server
@@ -73,11 +74,17 @@ app.use(cookieParser());
 // ejs engine is used to pass dynamic values
 app.set("view engine", "ejs");
 
-// Function: Authentication
-const isAuthenticated = (req, res, next) => {
+// Function: Authentication middleware
+const isAuthenticated = async (req, res, next) => {
     const {token} = req.cookies;
 
     if(token){
+        // The token encrypted using client secret is decoded here.
+        const decoded = jwt.verify(token, "asasasasas");
+
+        // Store the user data in a variable from the database
+        req.user = await User.findById(decoded._id);
+
         next();
     }
     else{
@@ -95,24 +102,9 @@ app.get("/", isAuthenticated,(req, res) => {
     // and send the html file to the root '/'
     // res.sendFile(path.join(currentLocation, "./index.html"));
     
-    res.render("logout");
+    res.render("logout", {name: req.user.name});
 
 })
-
-
-// API: get all users
-app.get("/users", (req, res)=>{
-    res.json({
-        users,
-    })
-})
-
-// API: add API
-app.get("/add", async (req, res)=>{
-    await Messge.create({name:"Tejas 2", email:"sample2@gmail.com"});
-    res.send("Nice");
-})
-
 
 
 // API: Login API
@@ -128,8 +120,9 @@ app.post("/login", async (req, res)=>{
         email: email,
     });
 
+    const token = jwt.sign({_id: user._id}, "asasasasas");
 
-    res.cookie("token", user._id, {
+    res.cookie("token", token, {
         httpOnly: true,
         expires: new Date(Date.now() + 60*1000),
     });
