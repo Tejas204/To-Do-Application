@@ -107,22 +107,6 @@ app.get("/", isAuthenticated,(req, res) => {
 
 })
 
-
-// API: Login API
-app.post("/login", async (req, res)=>{
-    // Cookie: It stores data of the loggin in user
-    // Ex: Key-Value pairs, domain, path, expiry of cookies.
-    // When cookie expires, user is automatically logged out. Default expiry is 'session'
-    
-    const {name, email, password} = req.body;
-
-    // Find if the user exists by email
-    let user = await User.findOne({email});
-    if(!user){
-       res.redirect("/register");
-    }
-})
-
 // API: Logout API
 // "Get" is used for logout as we don't need to pass any data
 app.get("/logout", (req, res)=>{
@@ -133,9 +117,33 @@ app.get("/logout", (req, res)=>{
     res.redirect("/")
 });
 
+// Route: for registration page
 app.get("/register", (req, res)=>{
     res.render("register");
 });
+
+app.get("/login", (req, res) => {
+    res.render("login");
+})
+
+
+// API: Login API
+app.post("/login", async (req, res)=>{
+    // Cookie: It stores data of the loggin in user
+    // Ex: Key-Value pairs, domain, path, expiry of cookies.
+    // When cookie expires, user is automatically logged out. Default expiry is 'session'
+
+    const {name, email, password} = req.body;
+
+    // Find if the user exists by email
+    let user = await User.findOne({email});
+    if(!user){
+       res.redirect("/register");
+    }
+})
+
+
+
 
 // API: Register API
 app.post("/register", async (req, res)=>{
