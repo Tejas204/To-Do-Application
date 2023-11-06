@@ -52,6 +52,7 @@ mongoose.connect("mongodb://localhost:27017", {
 const userSchema = new mongoose.Schema({
     name: String,
     email: String,
+    password: String,
 });
 
 // Define model/collection
@@ -112,12 +113,46 @@ app.post("/login", async (req, res)=>{
     // Cookie: It stores data of the loggin in user
     // Ex: Key-Value pairs, domain, path, expiry of cookies.
     // When cookie expires, user is automatically logged out. Default expiry is 'session'
+    
+    const {name, email, password} = req.body;
 
-    const {name, email} = req.body;
+    // Find if the user exists by email
+    let user = await User.findOne({email});
+    if(!user){
+       res.redirect("/register");
+    }
+})
 
-    const user = await User.create({
+// API: Logout API
+// "Get" is used for logout as we don't need to pass any data
+app.get("/logout", (req, res)=>{
+    res.cookie("token", null, {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+    });
+    res.redirect("/")
+});
+
+app.get("/register", (req, res)=>{
+    res.render("register");
+});
+
+// API: Register API
+app.post("/register", async (req, res)=>{
+    // res.render("register");
+
+    const {name, email, password} = req.body;
+
+    // Find if the user exists by email
+    let user = await User.findOne({email});
+
+    if(user){
+        return res.redirect("/login");
+    }
+    user = await User.create({
         name: name,
         email: email,
+        password: password
     });
 
     const token = jwt.sign({_id: user._id}, "asasasasas");
@@ -129,18 +164,6 @@ app.post("/login", async (req, res)=>{
     
     res.redirect("/")
 })
-
-// API: Logout API
-// "Get" is used for logout as we don't need to pass any data
-app.get("/logout", (req, res)=>{
-    res.cookie("token", null, {
-        httpOnly: true,
-        expires: new Date(Date.now()),
-    });
-    res.redirect("/")
-})
-
-// API: Con
 
 app.listen(5000, () => {
     console.log("Server is working");
