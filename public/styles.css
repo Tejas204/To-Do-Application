@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+body{
+    background-color: rgb(200, 200, 200);
+}
+
 main{
     background-color: rgb(255,225,221);
     height: 100vh;
@@ -13,6 +17,7 @@ main{
 
 form{
     background-color: white;
+    border-radius: 2em;
     display: flex;
     flex-direction: column;
     gap: 2rem;
