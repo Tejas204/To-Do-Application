@@ -89,7 +89,7 @@ const isAuthenticated = async (req, res, next) => {
         next();
     }
     else{
-        res.render("login");
+        res.redirect("/login");
     }
 }
 
@@ -134,13 +134,28 @@ app.post("/login", async (req, res)=>{
     // Ex: Key-Value pairs, domain, path, expiry of cookies.
     // When cookie expires, user is automatically logged out. Default expiry is 'session'
 
-    const {name, email, password} = req.body;
+    const {email, password} = req.body;
 
     // Find if the user exists by email
     let user = await User.findOne({email});
-    if(!user){
-       res.redirect("/register");
-    }
+    if(!user) return res.redirect("/register");
+
+    const isMatch = user.password===password;
+
+    if(!isMatch) return res.render("login", {message:"Incorrect password"});
+
+    // Create encrypted token with client secret
+    const token = jwt.sign({_id: user._id}, "asasasasas");
+
+    // Create a cookie to store user data
+    res.cookie("token", token, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 60*1000),
+    });
+    
+    res.redirect("/");
+
+
 })
 
 
