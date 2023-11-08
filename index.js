@@ -142,7 +142,7 @@ app.post("/login", async (req, res)=>{
 
     const isMatch = user.password===password;
 
-    if(!isMatch) return res.render("login", {message:"Incorrect password"});
+    if(!isMatch) return res.render("login", {email: email, message:"Incorrect password"});
 
     // Create encrypted token with client secret
     const token = jwt.sign({_id: user._id}, "asasasasas");

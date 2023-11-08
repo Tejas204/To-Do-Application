@@ -9,8 +9,9 @@
 <body>
     <form method="post" action="/login">
         <h1>Login Now</h1>
-        <input type="email" name="email" id="email" placeholder="Email">
-        <input type="password" name="password" id="password" placeholder="Password">
+        <input type="email" name="email" id="email" placeholder="Email" value="<%= locals.email %>"/>
+        <input type="password" name="password" id="password" placeholder="Password"/>
+        <p class="error"><%= locals.message %></p>
         <button type="submit">Log In</button>
     </form>
 </body>
